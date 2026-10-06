@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snap+ Gift</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%, #fff36a 0%, transparent 30%),
+    radial-gradient(circle at 90% 90%, #ffd21c 0%, transparent 35%),
+    #050505;
+  color: #fff;
+}
+.card {
+  width: calc(100% - 32px);
+  max-width: 410px;
+  padding: 34px 28px;
+  border-radius: 30px;
+  background: rgba(20,20,20,.82);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55);
+  backdrop-filter: blur(25px);
+  text-align: center;
+}
+.logo {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 20px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffc00;
+  color: #000;
+  font-size: 42px;
+  box-shadow: 0 12px 35px rgba(255,252,0,.25);
+}
+h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+p {
+  color: #aaa;
+  line-height: 1.5;
+}
+input {
+  width: 100%;
+  padding: 16px;
+  margin-top: 10px;
+  border-radius: 15px;
+  border: 1px solid #333;
+  outline: none;
+  background: #151515;
+  color: white;
+  font-size: 16px;
+  transition: .2s;
+}
+input:focus {
+  border-color: #fffc00;
+  box-shadow: 0 0 0 3px rgba(255,252,0,.1);
+}
+button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  border: 0;
+  border-radius: 15px;
+  background: #fffc00;
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+button:active {
+  transform: scale(.97);
+}
+#step2, #success {
+  display: none;
+}
+.code-input {
+  text-align: center;
+  font-size: 25px;
+  letter-spacing: 10px;
+  font-weight: 700;
+}
+.badge {
+  display: inline-block;
+  margin: 8px 0 15px;
+  padding: 7px 12px;
+  border-radius: 100px;
+  background: rgba(255,252,0,.12);
+  color: #fffc00;
+  font-size: 13px;
+}
+.countdown {
+  margin: 25px 0;
+  padding: 20px;
+  border-radius: 20px;
+  background: #111;
+  border: 1px solid #292929;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.small {
+  font-size: 12px;
+  color: #666;
+}
+.success-icon {
+  font-size: 65px;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">👻</div>
+  <div id="step1">
+    <div class="badge">✨ OFFRE EXCLUSIVE</div>
+    <h1>Un cadeau pour toi</h1>
+    <p>
+      Entre ton nom d'utilisateur pour commencer
+      
+    </p>
+    <input
+      id="username"
+      type="text"
+      placeholder="Nom d'utilisateur Snapchat"
+      autocomplete="off"
+    >
+    <button onclick="nextStep()">
+      Continuer
+    </button>
+  </div>
+  <div id="step2">
+    <div class="badge">VÉRIFICATION</div>
+    <h1>Confirme ton numéro</h1>
+    <p>
+      Entre un numéro pour continuer.
+    </p>
+    <input
+      id="phone"
+      type="tel"
+      placeholder="Numéro de téléphone"
+    >
+    <input
+      id="code"
+      class="code-input"
+      type="text"
+      inputmode="numeric"
+      maxlength="4"
+      placeholder="••••"
+    >
+    <button onclick="verify()">
+      Vérifier
+    </button>
+    <p class="small">
+      Simulation — aucun SMS n'est envoyé.
+    </p>
+  </div>
+  <div id="success">
+    <div class="success-icon">🎉</div>
+    <div class="badge">CADEAU VALIDÉ</div>
+    <h1>Félicitations !</h1>
+    <p>
+      Ton cadeau Snap+ est maintenant confirmé.
+    </p>
+    <div class="countdown" id="countdown">
+      05:00:00
+    </div>
+    <p class="small">
+      patientez...
+    </p>
+  </div>
+</div>
+<script>
+function nextStep() {
+  const username =
+    document.getElementById("username").value.trim();
+  if (!username) {
+    alert("Entre ton nom d'utilisateur.");
+    return;
+  }
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+}
+function verify() {
+  const phone =
+    document.getElementById("phone").value.trim();
+  const code =
+    document.getElementById("code").value.trim();
+  if (!phone) {
+    alert("Entre un numéro de téléphone.");
+    return;
+  }
+  // Simulation : n'importe quel code à 4 chiffres fonctionne
+  if (!/^\d{4}$/.test(code)) {
+    alert("Entre un code de 4 chiffres.");
+    return;
+  }
+  document.getElementById("step2").style.display = "none";
+  document.getElementById("success").style.display = "block";
+  startCountdown();
+}
+function startCountdown() {
+  let time = 5 * 60 * 60;
+  const timer =
+    document.getElementById("countdown");
+  const interval = setInterval(() => {
+    const hours =
+      Math.floor(time / 3600);
+    const minutes =
+      Math.floor((time % 3600) / 60);
+    const seconds =
+      time % 60;
+    timer.textContent =
+      String(hours).padStart(2, "0") + ":" +
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
+    if (time <= 0) {
+      clearInterval(interval);
+      return;
+    }
+    time--;
+  }, 1000);
+}
+</script>
+</body>
+</html>
